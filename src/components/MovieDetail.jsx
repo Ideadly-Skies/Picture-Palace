@@ -3,39 +3,50 @@ import { useParams } from "react-router-dom";
 
 export default function MovieDetail() {
   const { id } = useParams();
+  const [movie, setMovie] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
-
-  // Mocked movie data — replace this with real API call if needed
-  const movie = {
-    title: "Mulan",
-    year: 2020,
-    duration: "1h 56m",
-    genre: "Action",
-    description: "A fearless young woman risks everything to become a warrior...",
-    backdrop: "/images/mulan.jpg",
-    trailer: "/trailers/top_gun_maverick.mp4",
-  };
+  const [error, setError] = useState(false);
 
   useEffect(() => {
+    const fetchMovieDetail = async () => {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/${id}?api_key=6b3e018d07a42e39065208f94be35ed3`
+        );
+        const data = await res.json();
+        setMovie(data);
+      } catch (err) {
+        setError(true);
+      }
+    };
+
+    fetchMovieDetail();
+
     const timer = setTimeout(() => {
       setShowVideo(true);
-    }, 2500); // 2.5s delay
+    }, 2500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [id]);
+
+  if (error) return <div className="text-white p-10">Error loading movie.</div>;
+  if (!movie) return <div className="text-white p-10">Loading...</div>;
+
+  // Derive trailer URL — replace this with a real trailer fetch if needed
+  const trailerUrl = `/trailers/top_gun_maverick.mp4`;
 
   return (
     <div className="relative w-full h-screen text-white">
       {/* Background */}
       {!showVideo ? (
         <img
-          src={movie.backdrop}
+          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
           alt="Backdrop"
           className="absolute inset-0 w-full h-full object-cover brightness-75 transition duration-500"
         />
       ) : (
         <video
-          src={movie.trailer}
+          src={trailerUrl}
           autoPlay
           muted
           playsInline
@@ -45,15 +56,15 @@ export default function MovieDetail() {
       )}
 
       {/* Overlay Content */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent flex items-center pl-12 pr-6">
+      <div className="absolute inset-0 bg-black/30 flex items-center pl-12 pr-6">
         <div className="max-w-xl space-y-6">
           <h1 className="text-5xl font-bold">{movie.title}</h1>
           <div className="text-sm text-gray-300 space-x-4">
-            <span>{movie.year}</span>
-            <span>{movie.duration}</span>
-            <span>{movie.genre}</span>
+            <span>{movie.release_date?.slice(0, 4)}</span>
+            <span>{Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</span>
+            <span>{movie.genres?.[0]?.name}</span>
           </div>
-          <p className="text-gray-200">{movie.description}</p>
+          <p className="text-gray-200">{movie.overview}</p>
 
           <div className="flex space-x-4 mt-4">
             <button className="bg-white text-black px-6 py-2 rounded-md font-semibold hover:bg-gray-300">
