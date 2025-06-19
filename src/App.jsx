@@ -5,8 +5,8 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -50,10 +50,36 @@ function App() {
       {!isDetailPage && <Navbar/>}
 
       {/* pass movies in here yeehaw */}
-      <Routes>
-        <Route path="/" element={<Home movies={movies} loading={loading} error={error}/>} />
-        <Route path="/movie/:id" element={<MovieDetail movies={movies} />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route
+            path="/"
+            element={
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Home movies={movies} loading={loading} error={error} />
+              </motion.div>
+            }
+          />
+          <Route
+            path="/movie/:id"
+            element={
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <MovieDetail movies={movies} />
+              </motion.div>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
 
       {!isDetailPage && <Footer />}
     </>

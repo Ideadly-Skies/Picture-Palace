@@ -5,18 +5,25 @@ export default function MovieDetail({movies}) {
   const { id } = useParams();
   const [showVideo, setShowVideo] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Convert ID string from URL to number and find the movie
-  const movie = movies.find((m) => m.id === parseInt(id));
-
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowVideo(true);
     }, 2500);
     return () => clearTimeout(timer);
   }, []);
-
   
+  // Convert ID string from URL to number and find the movie
+  const movie = movies.find((m) => m.id === parseInt(id));
+
+  if (!movie) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-black text-white">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white border-opacity-50"></div>
+      </div>
+    );
+  }
+
   // Derive trailer URL — replace this with a real trailer fetch if needed
   const trailerUrl = `/trailers/top_gun_maverick.mp4`;
   
