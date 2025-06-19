@@ -1,17 +1,26 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function MovieDetail({movies}) {
   const { id } = useParams();
   const [showVideo, setShowVideo] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  
+  const videoRef = useRef(null);
+
   useEffect(() => {
+    if (showVideo && videoRef.current) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => console.warn("Autoplay failed:", err));
+      }
+    }
+
     const timer = setTimeout(() => {
       setShowVideo(true);
     }, 2500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [showVideo]);
   
   // Convert ID string from URL to number and find the movie
   const movie = movies.find((m) => m.id === parseInt(id));
@@ -37,23 +46,35 @@ export default function MovieDetail({movies}) {
       )}
 
       {/* Background */}
-      {!showVideo ? (
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt="Backdrop"
-          className="absolute inset-0 w-full h-full object-cover brightness-75 transition duration-500"
-          onLoad={() => setImageLoaded(true)}
-        />
-      ) : (
-        <video
-          src={trailerUrl}
-          autoPlay
-          muted
-          playsInline
-          loop
-          className="absolute inset-0 w-full h-full object-cover transition duration-500"
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {!showVideo ? (
+          <motion.img
+            key="thumbnail"
+            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            alt="Backdrop"
+            onLoad={() => setImageLoaded(true)}
+            className="absolute inset-0 w-full h-full object-cover brightness-75"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          />
+        ) : (
+          <motion.video
+            key="video"
+            ref={videoRef}
+            src={trailerUrl}
+            autoPlay
+            playsInline
+            loop
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Overlay Content */}
       <div className="absolute inset-0 bg-black/30 flex items-center pl-12 pr-6">
