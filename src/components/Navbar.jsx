@@ -10,7 +10,7 @@ export default function Navbar() {
             alt="Movie Icon"
             className="w-8 h-8"
           />
-          <a className="btn btn-ghost text-xl">Picture Palace</a>
+          <a className="font-bold text-xl">Picture Palace</a>
         </div>
         <div className="flex gap-7">
           <input

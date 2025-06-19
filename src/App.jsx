@@ -45,15 +45,17 @@ function App() {
       <Navbar/>
 
       {/* fetch movies in here yeehaw */}
-      <div>
-          {loading && <p>Loading...</p>}
-          <ul>
-            {error && <p>Error!</p>}
-            {!loading && movies.map(el => (
-              // console.log("current el: ", el) 
-              <MovieCard key={el.id} title={el.title}/>
+      <div className="px-6 py-10">
+        {loading && <p>Loading...</p>}
+        {error && <p>Error!</p>}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-10">
+          {!loading &&
+            movies.map((el) => (
+              <MovieCard key={el.id} title={el.title} poster={`https://image.tmdb.org/t/p/w500${el.poster_path}`} overview={el.overview}/>
             ))}
-          </ul>  
+            {console.log(movies)}
+        </div>
       </div> 
 
       <Footer/>
