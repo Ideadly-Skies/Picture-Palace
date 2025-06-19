@@ -1,9 +1,11 @@
 import './App.css'
+import Home from './components/Home';
+import MovieDetail from './components/MovieDetail';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import MovieCard from './components/MovieCard';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -22,7 +24,6 @@ function App() {
         setMovies(result.results);
       }
     } catch (error) {
-      console.log(error)
       setError(true);
     } finally {
       setLoading(false);
@@ -44,19 +45,11 @@ function App() {
     <>
       <Navbar/>
 
-      {/* fetch movies in here yeehaw */}
-      <div className="px-6 py-10">
-        {loading && <p>Loading...</p>}
-        {error && <p>Error!</p>}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6 py-10">
-          {!loading &&
-            movies.map((el) => (
-              <MovieCard key={el.id} title={el.title} poster={`https://image.tmdb.org/t/p/w500${el.poster_path}`} overview={el.overview}/>
-            ))}
-            {console.log(movies)}
-        </div>
-      </div> 
+      {/* pass movies in here yeehaw */}
+      <Routes>
+        <Route path="/" element={<Home movies={movies} loading={loading} error={error}/>} />
+        <Route path="/movie/:id" element={<MovieDetail />} />
+      </Routes>
 
       <Footer/>
     </>
