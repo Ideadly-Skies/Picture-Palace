@@ -1,36 +1,22 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export default function MovieDetail() {
+export default function MovieDetail({movies}) {
   const { id } = useParams();
-  const [movie, setMovie] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
-  const [error, setError] = useState(false);
+  
+  // Convert ID string from URL to number and find the movie
+  const movie = movies.find((m) => m.id === parseInt(id));
 
   useEffect(() => {
-    const fetchMovieDetail = async () => {
-      try {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}?api_key=6b3e018d07a42e39065208f94be35ed3`
-        );
-        const data = await res.json();
-        setMovie(data);
-      } catch (err) {
-        setError(true);
-      }
-    };
-
-    fetchMovieDetail();
-
     const timer = setTimeout(() => {
       setShowVideo(true);
     }, 2500);
-
     return () => clearTimeout(timer);
-  }, [id]);
+  }, []);
 
-  if (error) return <div className="text-white p-10">Error loading movie.</div>;
   if (!movie) return <div className="text-white p-10">Loading...</div>;
+  console.log(movie)
 
   // Derive trailer URL — replace this with a real trailer fetch if needed
   const trailerUrl = `/trailers/top_gun_maverick.mp4`;
@@ -61,7 +47,7 @@ export default function MovieDetail() {
           <h1 className="text-5xl font-bold">{movie.title}</h1>
           <div className="text-sm text-gray-300 space-x-4">
             <span>{movie.release_date?.slice(0, 4)}</span>
-            <span>{Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</span>
+            <span> {movie.vote_average.toFixed(1)} <span className="">★</span> </span>
             <span>{movie.genres?.[0]?.name}</span>
           </div>
           <p className="text-gray-200">{movie.overview}</p>

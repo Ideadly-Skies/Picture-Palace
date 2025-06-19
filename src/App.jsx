@@ -6,12 +6,16 @@ import Footer from './components/Footer'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [ignore, setIgnore] = useState(false);
+
+  const location = useLocation();
+  const isDetailPage = location.pathname.startsWith('/movie/');
 
   // fetching (non-blocking)
   async function fetchMovies(){
@@ -43,15 +47,15 @@ function App() {
 
   return (
     <>
-      <Navbar/>
+      {!isDetailPage && <Navbar/>}
 
       {/* pass movies in here yeehaw */}
       <Routes>
         <Route path="/" element={<Home movies={movies} loading={loading} error={error}/>} />
-        <Route path="/movie/:id" element={<MovieDetail />} />
+        <Route path="/movie/:id" element={<MovieDetail movies={movies} />} />
       </Routes>
 
-      <Footer/>
+      {!isDetailPage && <Footer />}
     </>
   )
 }
