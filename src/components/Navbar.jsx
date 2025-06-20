@@ -1,23 +1,36 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="container mx-auto px-6 flex justify-between items-center w-full">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <img
             src="https://img.icons8.com/ios-filled/50/000000/movie-projector.png"
             alt="Movie Icon"
             className="w-8 h-8"
           />
-          <a className="font-bold text-xl">Picture Palace</a>
+          <Link to="/" className="font-bold text-xl">
+            Picture Palace
+          </Link>
         </div>
-        <div className="flex gap-7">
+
+        <div className="flex items-center gap-6">
+          <Link
+            to="/my-list"
+            className="text-sm font-medium"
+          >
+            My List
+          </Link>
+
           <input
             type="text"
             placeholder="Search"
-            className="input input-bordered w-24 md:w-auto"
+            className="input input-bordered w-24 md:w-56"
           />
+
+          {/* Profile Dropdown */}
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}

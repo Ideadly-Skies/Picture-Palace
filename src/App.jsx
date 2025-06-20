@@ -1,6 +1,7 @@
 import './App.css'
 import Home from './components/Home';
 import MovieDetail from './components/MovieDetail';
+import MyList from './components/MyList';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { useState } from 'react';
@@ -13,9 +14,11 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [ignore, setIgnore] = useState(false);
+  const [myList, setMyList] = useState([]);
 
   const location = useLocation();
   const isDetailPage = location.pathname.startsWith('/movie/');
+  const isCollectionPage = location.pathname.startsWith('/my-list');
 
   // fetching (non-blocking)
   async function fetchMovies(){
@@ -78,10 +81,23 @@ function App() {
               </motion.div>
             }
           />
+        <Route
+          path="/my-list"
+          element={
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <MyList myList={myList} />
+            </motion.div>
+          }
+        />
         </Routes>
       </AnimatePresence>
 
-      {!isDetailPage && <Footer />}
+      {!isDetailPage && !isCollectionPage && <Footer />}
     </>
   )
 }
