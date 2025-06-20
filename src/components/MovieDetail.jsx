@@ -66,6 +66,7 @@ export default function MovieDetail({movies}) {
             src={trailerUrl}
             autoPlay
             playsInline
+            // muted
             loop
             className="absolute inset-0 w-full h-full object-cover"
             initial={{ opacity: 0 }}
@@ -88,9 +89,14 @@ export default function MovieDetail({movies}) {
           <p className="text-gray-200">{movie.overview} <a href="/" className="underline hover:text-white transition duration-200">[home]</a></p>
 
           <div className="flex space-x-4 mt-4">
-            <button className="bg-white text-black px-6 py-2 rounded-md font-semibold hover:bg-gray-300">
+            <a
+              href={`https://id2.idlixvip.asia/search/${encodeURIComponent(movie.title.replace(/\s+/g, '+'))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-black px-6 py-2 rounded-md font-semibold hover:bg-gray-300 inline-block"
+            >
               ▶ Play
-            </button>
+            </a> 
             <button className="bg-gray-700 text-white px-6 py-2 rounded-md font-semibold hover:bg-gray-600">
               + My List
             </button>
