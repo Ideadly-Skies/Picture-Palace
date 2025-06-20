@@ -37,6 +37,14 @@ function App() {
     }
   }
 
+  // Load myList from localStorage on first render
+  useEffect(() => {
+    const storedList = localStorage.getItem('myList');
+    if (storedList) {
+      setMyList(JSON.parse(storedList));
+    }
+  }, []);
+
   useEffect(() => {
     // fetch movies in here
     fetchMovies();
@@ -77,7 +85,7 @@ function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <MovieDetail movies={movies} />
+                <MovieDetail movies={movies} setMyList={setMyList} myList={myList}/>
               </motion.div>
             }
           />

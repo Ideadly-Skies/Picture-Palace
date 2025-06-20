@@ -5,7 +5,6 @@ export default function Home({movies, loading, error}){
     return (
         // fetch movies in here yeehaw
         <div className="relative w-full min-h-screen px-6 py-10">
-            {/* ✅ Loading Spinner */}
             {loading && (
                 <motion.div
                 key="loader"
@@ -18,7 +17,6 @@ export default function Home({movies, loading, error}){
                 </motion.div>
             )}
 
-            {/* ✅ Error Message */}
             {error && (
                 <motion.div
                 key="error"
@@ -31,7 +29,6 @@ export default function Home({movies, loading, error}){
                 </motion.div>
             )}
 
-            {/* ✅ Grid of Movies (only show when ready) */}
             {!loading && !error && (
                 <motion.div
                 key="grid"
