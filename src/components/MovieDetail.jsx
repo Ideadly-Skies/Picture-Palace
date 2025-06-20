@@ -8,6 +8,11 @@ export default function MovieDetail({movies}) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const videoRef = useRef(null);
 
+  // derive trailer url with fallback if error occurs
+  const defaultTrailerUrl = `/trailers/top_gun_maverick.mp4`;
+  const trailerUrl = `/trailers/` + id + `_trailer.mp4`;
+  const [currentTrailerUrl, setCurrentTrailerUrl] = useState(trailerUrl);
+
   useEffect(() => {
     if (showVideo && videoRef.current) {
       const playPromise = videoRef.current.play();
@@ -22,6 +27,11 @@ export default function MovieDetail({movies}) {
     return () => clearTimeout(timer);
   }, [showVideo]);
   
+  // fallback to default trailer if video fails to load
+  function handleVideoError() {
+    setCurrentTrailerUrl(defaultTrailerUrl);
+  }
+
   // Convert ID string from URL to number and find the movie
   const movie = movies.find((m) => m.id === parseInt(id));
 
@@ -33,9 +43,7 @@ export default function MovieDetail({movies}) {
     );
   }
 
-  // Derive trailer URL — replace this with a real trailer fetch if needed
-  const trailerUrl = `/trailers/top_gun_maverick.mp4`;
-  
+
   return (
     <div className="relative w-full h-screen text-white">
       {/* display spinner when image and video not loaded */}
@@ -63,11 +71,12 @@ export default function MovieDetail({movies}) {
           <motion.video
             key="video"
             ref={videoRef}
-            src={trailerUrl}
+            src={currentTrailerUrl}
             autoPlay
             playsInline
             // muted
             loop
+            onError={handleVideoError}
             className="absolute inset-0 w-full h-full object-cover"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
