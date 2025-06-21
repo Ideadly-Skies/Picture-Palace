@@ -1,10 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
-export default function Navbar({setMovies}) {
-  const [query, setQuery] = useState([])
-
+export default function Navbar({setMovies, query, setQuery}) {
   const handleInputChange = (e) => {
     setQuery(e.target.value)
   }
@@ -25,6 +23,11 @@ export default function Navbar({setMovies}) {
     fetchMovie() 
   }, [query])
 
+  useEffect(() => {
+    
+
+  })
+  
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="container mx-auto px-6 flex justify-between items-center w-full">

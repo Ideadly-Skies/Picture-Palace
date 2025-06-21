@@ -1,14 +1,20 @@
 import { Link } from "react-router-dom";
 
-export default function MyList({ myList }) {
+export default function MyList({ myList, query }) {
+    const filteredList = query.length > 0
+    ? myList.filter(movie =>
+        movie.title?.toLowerCase().includes(query.toLowerCase())
+      )
+    : myList;
+
     return (
         <div className="bg-white min-h-screen text-white mt-10">
             <div className="container mx-auto px-6">
                 <h1 className="text-black text-3xl font-bold mb-8">My List</h1>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {myList.length > 0 ? (
-                    myList.map((movie) => (
+                {filteredList.length > 0 ? (
+                    filteredList.map((movie) => (
                     <Link
                         key={movie.id}
                         to={`/movie/${movie.id}`}

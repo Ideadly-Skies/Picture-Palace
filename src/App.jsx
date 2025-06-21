@@ -13,6 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [myList, setMyList] = useState([]);
+  const [query, setQuery] = useState([])
 
   const location = useLocation();
   const isDetailPage = location.pathname.startsWith('/movie/');
@@ -24,22 +25,10 @@ function App() {
     try {
       const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=6b3e018d07a42e39065208f94be35ed3");
 
-      if (response.status === 429) {
-        console.warn("Rate limit exceeded. Try again later.");
-        return; 
-      }
-
       const result = await response.json();
-
-      if (Array.isArray(result.results) && result.results.length > 0) {
-        setMovies(result.results);
-        localStorage.setItem('cachedMovies', JSON.stringify(result.results));
-      } else {
-        console.warn("No movies found in response.");
-        setMovies([]);
-      }
+      setMovies(result.result)
+      
     } catch (error) {
-      console.error("Fetch error:", error);
       setError(true);
     } finally {
       setLoading(false);
@@ -47,8 +36,6 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("this is being called (myList)")
-
     // load list from local storage
     const storedList = localStorage.getItem('myList');
     if (storedList) {
@@ -57,8 +44,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("this is being called as well (fetch movie)")
-
     if (location.pathname === '/') {
       // always refetch when the array is empty 
       if (movies.length === 0){
@@ -72,14 +57,9 @@ function App() {
     }
   }, [location.pathname, movies.length]);
 
-  useEffect(() => {
-    console.log('Path changed:', location.pathname);
-    console.log('Current movies:', movies);
-  }, [location.pathname, movies]);
-
   return (
     <>
-      {!isDetailPage && <Navbar setMovies={setMovies}/>}
+      {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery}/>}
 
       {/* pass movies in here yeehaw */}
       <AnimatePresence mode="wait">
@@ -107,7 +87,7 @@ function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <MovieDetail setMovies={setMovies} setMyList={setMyList} myList={myList}/>
+                <MovieDetail setMyList={setMyList} myList={myList}/>
               </motion.div>
             }
           />
@@ -120,7 +100,7 @@ function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
             >
-              <MyList myList={myList} />
+              <MyList myList={myList} query={query}/>
             </motion.div>
           }
         />

@@ -4,25 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
-export default function MovieDetail({ setMovies, setMyList, myList }) {
+export default function MovieDetail({ setMyList, myList }) {
   const { id } = useParams();
   const [showVideo, setShowVideo] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [notification, setNotification] = useState(null);
-  const videoRef = useRef(null);
-
+  const [movie, setMovie] = useState(null);
+  
   const defaultTrailerUrl = `/trailers/top_gun_maverick.mp4`;
   const trailerUrl = `/trailers/` + id + `_trailer.mp4`;
   const [currentTrailerUrl, setCurrentTrailerUrl] = useState(trailerUrl);
-  const [movie, setMovie] = useState(null);
+  const videoRef = useRef(null);
 
-  // setMovies from local storage so when you press the
-  // back button there's no error
-  const storedMovies = localStorage.getItem("movies");
-  if (storedMovies) {
-    setMovies(JSON.parse(storedMovies));
-  }
-  
   useEffect(() => {
     async function fetchMovieDetail() {
       const API_KEY = '6b3e018d07a42e39065208f94be35ed3';
