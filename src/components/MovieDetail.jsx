@@ -51,13 +51,18 @@ export default function MovieDetail({ setMyList, myList }) {
     setCurrentTrailerUrl(defaultTrailerUrl);
   }
 
-  function triggerNotification(message, type = "success") {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 2000);
-  }
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   function handleToggleList() {
     if (!movie) return;
+    
+    const message = isAlreadyInList ? "Removed from list ⚠️" : "Added to list ✅";
+    const type = isAlreadyInList ? "danger" : "success";
     
     setMyList((prevList) => {
       const updatedList = isAlreadyInList
@@ -65,14 +70,10 @@ export default function MovieDetail({ setMyList, myList }) {
         : [...prevList, movie];
 
       localStorage.setItem("myList", JSON.stringify(updatedList));
-
-      triggerNotification(
-        isAlreadyInList ? "Removed from list ⚠️" : "Added to list ✅",
-        isAlreadyInList ? "danger" : "success"
-      );
-
       return updatedList;
     });
+
+    setNotification({ message, type });
   }
 
   if (!movie) {

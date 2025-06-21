@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 
 export default function Home({movies, loading, error}){
     return (
-        // fetch movies in here yeehaw
         <div className="relative w-full min-h-screen px-6 py-10">
             {loading && (
                 <motion.div

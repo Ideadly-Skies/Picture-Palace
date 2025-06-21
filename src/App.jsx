@@ -13,7 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [myList, setMyList] = useState([]);
-  const [query, setQuery] = useState([])
+  const [query, setQuery] = useState([]);
 
   const location = useLocation();
   const isDetailPage = location.pathname.startsWith('/movie/');
@@ -24,49 +24,48 @@ function App() {
     setLoading(true);
     try {
       const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=6b3e018d07a42e39065208f94be35ed3");
-
       const result = await response.json();
-      setMovies(result.result)
-      
-    } catch (error) {
+      setMovies(result.results)
+    } 
+    catch (error) {
       setError(true);
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    // load list from local storage
+    let isMounted = true;
+
+    if (location.pathname === '/' || isDetailPage) {
+      // fetch movies from themoviedb
+      fetchMovies() 
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    // load myList from localStorage 
     const storedList = localStorage.getItem('myList');
     if (storedList) {
       setMyList(JSON.parse(storedList));
     }
   }, []);
 
-  useEffect(() => {
-    if (location.pathname === '/') {
-      // load movies from local storage
-      const cached = localStorage.getItem('cachedMovies');
-      if (cached) {
-        setMovies(JSON.parse(cached));
-      } else {
-        fetchMovies()
-      }
-    }
-  }, [location.pathname, movies.length]);
-
   return (
     <>
       {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery}/>}
 
-      {/* pass movies in here yeehaw */}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route
             path="/"
             element={
               <motion.div
-                key="home"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -89,19 +88,19 @@ function App() {
               </motion.div>
             }
           />
-        <Route
-          path="/my-list"
-          element={
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-            >
-              <MyList myList={myList} query={query}/>
-            </motion.div>
-          }
-        />
+          <Route
+            path="/my-list"
+            element={
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <MyList myList={myList} query={query}/>
+              </motion.div>
+            }
+          />
         </Routes>
       </AnimatePresence>
 
