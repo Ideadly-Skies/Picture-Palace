@@ -45,15 +45,13 @@ function App() {
 
   useEffect(() => {
     if (location.pathname === '/') {
-      // always refetch when the array is empty 
-      if (movies.length === 0){
-        const cached = localStorage.getItem('cachedMovies');
-        if (cached) {
-          setMovies(JSON.parse(cached));
-        } else {
-          fetchMovies()
-        }
-      } 
+      // load movies from local storage
+      const cached = localStorage.getItem('cachedMovies');
+      if (cached) {
+        setMovies(JSON.parse(cached));
+      } else {
+        fetchMovies()
+      }
     }
   }, [location.pathname, movies.length]);
 
