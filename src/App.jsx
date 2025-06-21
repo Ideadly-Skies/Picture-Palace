@@ -36,7 +36,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (location.pathname === '/' && movies.length === 0) {
+    if ((location.pathname === '/' || isDetailPage || isCollectionPage ) && movies.length === 0) {
       fetchMovies();
     } 
   }, [location.pathname, movies.length]);

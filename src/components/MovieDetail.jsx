@@ -4,11 +4,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
+// notification system
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function MovieDetail({ setMyList, myList }) {
   const { id } = useParams();
   const [showVideo, setShowVideo] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [notification, setNotification] = useState(null);
   const [movie, setMovie] = useState(null);
   
   const defaultTrailerUrl = `/trailers/top_gun_maverick.mp4`;
@@ -51,29 +54,33 @@ export default function MovieDetail({ setMyList, myList }) {
     setCurrentTrailerUrl(defaultTrailerUrl);
   }
 
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
-
   function handleToggleList() {
     if (!movie) return;
-    
-    const message = isAlreadyInList ? "Removed from list ⚠️" : "Added to list ✅";
-    const type = isAlreadyInList ? "danger" : "success";
-    
+
+    const alreadyInList = myList.some((m) => m.id === movie.id);
+
     setMyList((prevList) => {
       const updatedList = isAlreadyInList
         ? prevList.filter((m) => m.id !== movie.id)
         : [...prevList, movie];
 
       localStorage.setItem("myList", JSON.stringify(updatedList));
+
       return updatedList;
     });
 
-    setNotification({ message, type });
+    toast[alreadyInList ? "warn" : "success"](
+      alreadyInList ? `Removed ${movie.title} from My List` : `Added ${movie.title} to My List`,
+      {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        icon: alreadyInList ? "❌" : "✅",
+      }
+    );
   }
 
   if (!movie) {
@@ -86,18 +93,6 @@ export default function MovieDetail({ setMyList, myList }) {
 
   return (
     <div className="relative w-full h-screen text-white">
-      {notification && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className={`absolute top-4 left-1/2 transform -translate-x-1/2 px-6 py-2 rounded shadow-lg z-50
-            ${notification.type === "success" ? "bg-green-600" : "bg-red-600"} text-white`}
-        >
-          {notification.message}
-        </motion.div>
-      )}
-
       {!showVideo && !imageLoaded && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white border-opacity-50"></div>
@@ -171,6 +166,23 @@ export default function MovieDetail({ setMyList, myList }) {
           </div>
         </div>
       </div>
+
+      {/* display notification */}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        theme="dark"
+        toastClassName="bg-gray-900 text-white border border-gray-700 text-center"
+        bodyClassName="text-sm"
+      />
+              
     </div>
   );
 }
