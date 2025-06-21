@@ -107,7 +107,7 @@ function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <MovieDetail movies={movies} setMyList={setMyList} myList={myList}/>
+                <MovieDetail setMovies={setMovies} setMyList={setMyList} myList={myList}/>
               </motion.div>
             }
           />
