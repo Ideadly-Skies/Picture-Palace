@@ -1,7 +1,30 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export default function Navbar() {
+export default function Navbar({setMovies}) {
+  const [query, setQuery] = useState([])
+
+  const handleInputChange = (e) => {
+    setQuery(e.target.value)
+  }
+
+  useEffect(() => {
+    async function fetchMovie(){
+      const API_KEY = '6b3e018d07a42e39065208f94be35ed3';
+      const URL = query 
+      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
+      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+
+      const response = await fetch(URL)
+      const {results} = await response.json()
+    
+      query.length > 2 ? setMovies(results.slice(0,3)) : setMovies(results)
+    }
+
+    fetchMovie() 
+  }, [query])
+
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="container mx-auto px-6 flex justify-between items-center w-full">
@@ -27,6 +50,8 @@ export default function Navbar() {
           <input
             type="text"
             placeholder="Search"
+            value={query}
+            onChange={handleInputChange}
             className="input input-bordered w-24 md:w-56"
           />
 

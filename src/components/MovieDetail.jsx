@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
-export default function MovieDetail({ movies, setMyList, myList }) {
+export default function MovieDetail({ setMyList, myList }) {
   const { id } = useParams();
   const [showVideo, setShowVideo] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -12,9 +14,29 @@ export default function MovieDetail({ movies, setMyList, myList }) {
   const defaultTrailerUrl = `/trailers/top_gun_maverick.mp4`;
   const trailerUrl = `/trailers/` + id + `_trailer.mp4`;
   const [currentTrailerUrl, setCurrentTrailerUrl] = useState(trailerUrl);
+  const [movie, setMovie] = useState(null);
 
-  const movie = movies.find((m) => m.id === parseInt(id));
-  const isAlreadyInList = myList.some((m) => m.id === movie?.id);
+  useEffect(() => {
+    async function fetchMovieDetail() {
+      const API_KEY = '6b3e018d07a42e39065208f94be35ed3';
+      const URL = `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`;
+
+      try {
+        const response = await fetch(URL);
+        const data = await response.json();
+        setMovie(data);
+      } catch (error) {
+        console.error("Failed to fetch movie detail:", error);
+      }
+    }
+
+    fetchMovieDetail();
+  }, [id]);
+
+  const isAlreadyInList = useMemo(() => {
+    if (!movie) return false;
+    return myList.some((m) => m.id === movie.id);
+  }, [movie, myList]);
 
   useEffect(() => {
     if (showVideo && videoRef.current) {
@@ -35,6 +57,8 @@ export default function MovieDetail({ movies, setMyList, myList }) {
   }
 
   function handleToggleList() {
+    if (!movie) return;
+    
     setMyList((prevList) => {
       const updatedList = isAlreadyInList
         ? prevList.filter((m) => m.id !== movie.id)
@@ -119,12 +143,12 @@ export default function MovieDetail({ movies, setMyList, myList }) {
             <span>{movie.genres?.[0]?.name}</span>
           </div>
           <p className="text-gray-200">
-            {movie.overview} <a href="/" className="underline hover:text-white">[home]</a>
+            {movie.overview} <Link to="/" className="underline hover:text-white">[home]</Link>
           </p>
 
           <div className="flex space-x-4 mt-4">
-            <a
-              href={`https://id2.idlixvip.asia/search/${encodeURIComponent(
+            <Link
+              to={`https://id2.idlixvip.asia/search/${encodeURIComponent(
                 movie.title.replace(/\s+/g, "+")
               )}`}
               target="_blank"
@@ -132,7 +156,7 @@ export default function MovieDetail({ movies, setMyList, myList }) {
               className="bg-white text-black px-6 py-2 rounded-md font-semibold hover:bg-gray-300"
             >
               ▶ Play
-            </a>
+            </Link>
             <button
               className={`px-6 py-2 rounded-md font-semibold transition duration-200 ${
                 isAlreadyInList

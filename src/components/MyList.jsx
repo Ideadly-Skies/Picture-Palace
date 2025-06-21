@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 
 export default function MyList({ myList }) {
-    console.log("my List: ", myList)
-
     return (
         <div className="bg-white min-h-screen text-white mt-10">
             <div className="container mx-auto px-6">

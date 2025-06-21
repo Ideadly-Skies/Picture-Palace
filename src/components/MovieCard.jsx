@@ -10,7 +10,7 @@ export default function MovieCard({ id, title, poster, overview }) {
     const handleMouseEnter = () => {
         hoverTimeout.current = setTimeout(() => {
         setHovered(true);
-        }, 2000); // wait 2 seconds before showing link overlay
+        }, 2000);
     };
 
     const handleMouseLeave = () => {
