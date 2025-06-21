@@ -36,20 +36,12 @@ function App() {
   }
 
   useEffect(() => {
-    let isMounted = true;
-
-    if (location.pathname === '/' || isDetailPage) {
-      // fetch movies from themoviedb
-      fetchMovies() 
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [location.pathname]);
+    if (location.pathname === '/' && movies.length === 0) {
+      fetchMovies();
+    } 
+  }, [location.pathname, movies.length]);
 
   useEffect(() => {
-    // load myList from localStorage 
     const storedList = localStorage.getItem('myList');
     if (storedList) {
       setMyList(JSON.parse(storedList));
@@ -61,11 +53,12 @@ function App() {
       {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery}/>}
 
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
+        <Routes location={location}>
           <Route
             path="/"
             element={
               <motion.div
+                key={location.pathname}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -79,6 +72,7 @@ function App() {
             path="/movie/:id"
             element={
               <motion.div
+                key={location.pathname}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
@@ -92,6 +86,7 @@ function App() {
             path="/my-list"
             element={
               <motion.div
+                key={location.pathname}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}

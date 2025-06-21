@@ -23,11 +23,6 @@ export default function Navbar({setMovies, query, setQuery}) {
     fetchMovie() 
   }, [query])
 
-  useEffect(() => {
-    
-
-  })
-  
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="container mx-auto px-6 flex justify-between items-center w-full">
