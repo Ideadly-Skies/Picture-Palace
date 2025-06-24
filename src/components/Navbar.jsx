@@ -6,7 +6,12 @@ export default function Navbar({setMovies, query, setQuery, setLoading}) {
   const handleInputChange = (e) => {
     setQuery(e.target.value)
   }
-  
+
+  // reset query when pressing the home button
+  const resetQuery = () => {
+    setQuery('')
+  }
+
   async function fetchMovie(){
     setLoading(true)
     const API_KEY = '6b3e018d07a42e39065208f94be35ed3';
@@ -48,7 +53,7 @@ export default function Navbar({setMovies, query, setQuery, setLoading}) {
             alt="Movie Icon"
             className="w-8 h-8"
           />
-          <Link to="/" className="font-bold text-xl">
+          <Link to="/" onClick={resetQuery} className="font-bold text-xl">
             Movie Palace
           </Link>
         </div>
