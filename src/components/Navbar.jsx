@@ -2,25 +2,41 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
-export default function Navbar({setMovies, query, setQuery}) {
+export default function Navbar({setMovies, query, setQuery, setLoading}) {
   const handleInputChange = (e) => {
     setQuery(e.target.value)
   }
+  
+  async function fetchMovie(){
+    setLoading(true)
+    const API_KEY = '6b3e018d07a42e39065208f94be35ed3';
+    const URL = query 
+    ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
+    : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
 
-  useEffect(() => {
-    async function fetchMovie(){
-      const API_KEY = '6b3e018d07a42e39065208f94be35ed3';
-      const URL = query 
-      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
-      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
-
-      const response = await fetch(URL)
-      const {results} = await response.json()
+    const response = await fetch(URL)
+    const {results} = await response.json()
     
+    try {
       query.length > 2 ? setMovies(results.slice(0,3)) : setMovies(results)
+    } catch (error){
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  useEffect(() => {
+    setLoading(true)
+
+    const handler = setTimeout(() => {
+      fetchMovie() 
+    }, 1000)
+
+    return () => {
+      clearTimeout(handler)
     }
 
-    fetchMovie() 
   }, [query])
 
   return (
@@ -33,7 +49,7 @@ export default function Navbar({setMovies, query, setQuery}) {
             className="w-8 h-8"
           />
           <Link to="/" className="font-bold text-xl">
-            Picture Palace
+            Movie Palace
           </Link>
         </div>
 

@@ -11,7 +11,7 @@ export default function Footer() {
               alt="Movie Icon"
               className="w-8 h-8"
             />
-            <a className="font-bold text-xl">Picture Palace</a> 
+            <a className="font-bold text-xl">Movie Palace</a> 
           </div>
           <p>
             Obie Industries Ltd.

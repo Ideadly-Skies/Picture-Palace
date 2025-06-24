@@ -50,7 +50,7 @@ function App() {
 
   return (
     <>
-      {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery}/>}
+      {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery} setLoading={setLoading}/>}
 
       <AnimatePresence mode="wait">
         <Routes location={location}>
