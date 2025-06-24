@@ -1,7 +1,8 @@
 import MovieCard from "./MovieCard"
 import { motion } from 'framer-motion';
+import movieLogo from '/photos/movie-icon.webp';
 
-export default function Home({movies, loading, error}){
+export default function Home({movies, loading, progress, error}){
     return (
         <>  
             <div className="relative w-full min-h-screen px-6 py-10">
@@ -11,9 +12,13 @@ export default function Home({movies, loading, error}){
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-50 flex items-center justify-center bg-black text-white"
+                        className="absolute inset-0 z-50 flex items-center justify-center bg-white text-white"
                     >
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-white border-opacity-50"></div>
+                        <div className="flex flex-col items-center -translate-y-20 space-y-4">
+                            <img src={movieLogo} className="w-24 mb-2" alt="Movie Logo" />
+                            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-red-600 border-opacity-50"></div>
+                            <div className="text-red-600 text-xl font-semibold mt-2">{progress}%</div>
+                        </div>
                     </motion.div>
                 )}
 

@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(false);
   const [myList, setMyList] = useState([]);
   const [query, setQuery] = useState([]);
@@ -48,6 +49,20 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      setProgress(100);
+      return;
+    }
+
+    setProgress(0);
+    const timer = setInterval(() => {
+      setProgress((prev) => (prev < 90 ? prev + 1 : prev));
+    }, 30); 
+
+    return () => clearInterval(timer);
+  }, [loading]);
+
   return (
     <>
       {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery} setLoading={setLoading}/>}
@@ -64,7 +79,7 @@ function App() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <Home movies={movies} loading={loading} error={error} />
+                <Home movies={movies} loading={loading} progress={progress} error={error}/>
               </motion.div>
             }
           />
