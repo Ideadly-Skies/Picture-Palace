@@ -5,46 +5,6 @@ import NoMovies from "./NoMovies";
 
 export default function Home({movies, page, setPage, totalPages, loading, progress, error}){
     
-    function getPaginationRange(currentPage, totalPages, siblingCount = 1) {
-        const totalNumbers = siblingCount * 2 + 5;
-        
-        if (totalPages <= totalNumbers) {
-            return [...Array(totalPages).keys()].map((n) => n + 1);
-        }
-
-        const left = currentPage - siblingCount;
-        const right = currentPage + siblingCount;
-
-        const range = [];
-
-        // First page
-        range.push(1);
-
-        // Left ellipsis
-        if (left > 2) {
-            range.push('…');
-        }
-
-        // Middle pages
-        const start = Math.max(left, 2);
-        const end = Math.min(right, totalPages - 1);
-        for (let i = start; i <= end; i++) {
-            range.push(i);
-        }
-
-        // Right ellipsis
-        if (right < totalPages - 1) {
-            range.push('…');
-        }
-
-        // Last page
-        range.push(totalPages);
-
-        return range;
-    }
-    
-    const paginationRange = getPaginationRange(page, totalPages);
-
     return (
         <>  
             <div className="relative w-full min-h-screen px-6 py-10 bg-black">
@@ -101,22 +61,33 @@ export default function Home({movies, page, setPage, totalPages, loading, progre
                         </motion.div>
 
                         <div className="flex justify-center mt-8">
-                            <div className="join">
-                                {paginationRange.map((num, index) => (
-                                typeof num === 'number' ? (
-                                    <button
-                                    key={index}
-                                    className={`join-item btn btn-square focus:outline-none focus:ring-0 ${
-                                        page === num ? "bg-red-600 text-white" : "bg-white text-black"
+                            <div className="join shadow-md rounded-full overflow-hidden border border-zinc-800">
+                                <button
+                                className={`join-item btn bg-black text-white border-none px-4 py-2 
+                                    ${page <= 1 ? "opacity-50 cursor-not-allowed" : "hover:outline hover:outline-2 hover:outline-red-500"} `}
+                                disabled={page <= 1}
+                                onClick={() => setPage(page - 1)}
+                                >
+                                <i className="fa-solid fa-chevron-left"></i> Prev
+                                </button>
+
+                                <button
+                                className={`join-item btn border-none ${
+                                    "bg-red-600 text-white font-medium pointer-events-none"
+                                }`}
+                                >
+                                Page {page}
+                                </button>
+
+                                <button
+                                    className={`join-item btn bg-black text-white border-none px-4 py-2 ${
+                                        page >= totalPages ? "opacity-50 cursor-not-allowed" : "hover:outline hover:outline-2 hover:outline-red-500"
                                     }`}
-                                    onClick={() => setPage(num)}
-                                    >
-                                    {num}
-                                    </button>
-                                ) : (
-                                    <span key={index} className="join-item btn btn-square pointer-events-none opacity-50">…</span>
-                                )
-                                ))}
+                                    disabled={page >= totalPages}
+                                    onClick={() => setPage(page + 1)}
+                                >
+                                    Next <i className="fa-solid fa-chevron-right"></i>
+                                </button>
                             </div>
                         </div>
                     </>
