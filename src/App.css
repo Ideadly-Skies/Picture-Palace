@@ -1,2 +1,9 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+html, body, #root {
+  background-color: black;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}

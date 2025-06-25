@@ -81,6 +81,17 @@ function App() {
               transition={{ duration: 0.4 }}
               >
                 <HeroCarousel movies={movies}/>
+
+                <div className="px-8 pt-16 pb-8 text-center bg-black from-black via-black/60 to-transparent">
+                  <h2 className="text-4xl font-extrabold text-white tracking-[0.2em] uppercase drop-shadow-lg">
+                    Now Playing
+                  </h2>
+                  <div className="w-24 h-1 mx-auto mt-2 mb-4 bg-red-600 opacity-80 rounded-full"></div>
+                  <p className="text-white/70 mt-2 text-sm font-light max-w-md mx-auto tracking-wide drop-shadow-sm">
+                    Browse our top movies currently in theaters — discover the best picks for your next cinematic experience.
+                  </p>
+                </div>
+
                 <Home movies={movies} loading={loading} progress={progress} error={error}/>
               </motion.div>
             }
@@ -116,7 +127,7 @@ function App() {
         </Routes>
       </AnimatePresence>
 
-      {!isDetailPage && !isCollectionPage && <Footer />}
+      {!isDetailPage && <Footer />}
     </>
   )
 }

@@ -5,14 +5,14 @@ import movieLogo from '/photos/movie-icon.webp';
 export default function Home({movies, loading, progress, error}){
     return (
         <>  
-            <div className="relative w-full min-h-screen px-6 py-10">
+            <div className="relative w-full min-h-screen px-6 py-10 bg-black">
                 {loading && (
                     <motion.div
                         key="loader"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-50 flex items-center justify-center bg-white text-white"
+                        className="absolute inset-0 z-50 flex items-center justify-center bg-black text-white"
                     >
                         <div className="flex flex-col items-center -translate-y-20 space-y-4">
                             <img src={movieLogo} className="w-24 mb-2" alt="Movie Logo" />
