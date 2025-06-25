@@ -77,32 +77,36 @@ export default function MyList({ myList, query }) {
 
         {/* Pagination */}
         {filteredList.length > moviesPerPage && (
-          <div className="flex justify-center mt-8">
-            <div className="join">
-              {paginationRange.map((num, index) =>
-                typeof num === "number" ? (
-                  <button
-                    key={index}
-                    onClick={() => setPage(num)}
-                    className={`join-item btn btn-square focus:outline-none focus:ring-0 ${
-                      page === num
-                        ? "bg-red-600 text-white"
-                        : "bg-white text-black"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                ) : (
-                  <span
-                    key={index}
-                    className="join-item btn btn-square pointer-events-none opacity-50"
-                  >
-                    …
-                  </span>
-                )
-              )}
+        <div className="flex justify-center mt-8">
+            <div className="join shadow-md rounded-full overflow-hidden border border-zinc-800">
+            {/* Previous */}
+            <button
+                className={`join-item btn bg-black text-white border-none ${
+                page <= 1 ? "opacity-50 cursor-not-allowed" : "hover:outline hover:outline-2 hover:outline-red-500"
+                }`}
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+            >
+                <i className="fa-solid fa-chevron-left"></i> Prev
+            </button>
+
+            {/* Active page */}
+            <button className="join-item btn bg-red-600 text-white border-none pointer-events-none">
+                Page {page}
+            </button>
+
+            {/* Next */}
+            <button
+                className={`join-item btn bg-black text-white border-none ${
+                page >= totalPages ? "opacity-50 cursor-not-allowed" : "hover:outline hover:outline-2 hover:outline-red-500"
+                }`}
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+            >
+                Next <i className="fa-solid fa-chevron-right"></i>
+            </button>
             </div>
-          </div>
+        </div>
         )}
       </div>
     </div>

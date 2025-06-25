@@ -41,15 +41,25 @@ function App() {
     }
   }
 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   if (location.pathname === '/' || isDetailPage || isCollectionPage || movies.length == 0) {
+  //     const handler = setTimeout(() => {
+  //       fetchMovies(page);
+  //     }, 1000) 
+  //     return () => clearTimeout(handler); 
+  //   }
+  // }, [location.pathname, movies.length, page]);
+  
   useEffect(() => {
-    setLoading(true);
-    if (location.pathname === '/' || isDetailPage || isCollectionPage || movies.length == 0) {
+    if (location.pathname === '/' || isDetailPage || isCollectionPage) {
+      setLoading(true);
       const handler = setTimeout(() => {
         fetchMovies(page);
-      }, 1000) 
-      return () => clearTimeout(handler); 
+      }, 1000);
+      return () => clearTimeout(handler);
     }
-  }, [location.pathname, movies.length, page]); 
+  }, [location.pathname, page, isDetailPage, isCollectionPage]);
 
   useEffect(() => {
     const storedList = localStorage.getItem('myList');
