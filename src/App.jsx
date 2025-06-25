@@ -30,7 +30,7 @@ function App() {
       const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=6b3e018d07a42e39065208f94be35ed3&page=${page}`);
       const result = await response.json();
       console.log(result)
-      setMovies(result.results)
+      setMovies(result.results || [])
       setTotalPages(result.total_pages); 
     } 
     catch (error) {

@@ -1,6 +1,7 @@
 import MovieCard from "./MovieCard"
 import { motion } from 'framer-motion';
 import movieLogo from '/photos/movie-icon.webp';
+import NoMovies from "./NoMovies";
 
 export default function Home({movies, page, setPage, totalPages, loading, progress, error}){
     
@@ -73,6 +74,10 @@ export default function Home({movies, page, setPage, totalPages, loading, progre
                     >
                         Something went wrong fetching your movies.
                     </motion.div>
+                )}
+
+                {!loading && !error && movies.length === 0 && (
+                    <NoMovies message="No movies found. Please check back later or try a different search!" />
                 )}
 
                 {!loading && !error && (
