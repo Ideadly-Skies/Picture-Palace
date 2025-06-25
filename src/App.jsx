@@ -16,18 +16,22 @@ function App() {
   const [error, setError] = useState(false);
   const [myList, setMyList] = useState([]);
   const [query, setQuery] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const location = useLocation();
   const isDetailPage = location.pathname.startsWith('/movie/');
   const isCollectionPage = location.pathname.startsWith('/my-list');
   
   // fetching (non-blocking)
-  async function fetchMovies() {
+  async function fetchMovies(page = 1) {
     setLoading(true);
     try {
-      const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=6b3e018d07a42e39065208f94be35ed3");
+      const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=6b3e018d07a42e39065208f94be35ed3&page=${page}`);
       const result = await response.json();
+      console.log(result)
       setMovies(result.results)
+      setTotalPages(result.total_pages); 
     } 
     catch (error) {
       setError(true);
@@ -38,10 +42,14 @@ function App() {
   }
 
   useEffect(() => {
-    if ((location.pathname === '/' || isDetailPage || isCollectionPage ) && movies.length === 0) {
-      fetchMovies();
-    } 
-  }, [location.pathname, movies.length]);
+    setLoading(true);
+    if (location.pathname === '/' || isDetailPage || isCollectionPage || movies.length == 0) {
+      const handler = setTimeout(() => {
+        fetchMovies(page);
+      }, 1000) 
+      return () => clearTimeout(handler); 
+    }
+  }, [location.pathname, movies.length, page]); 
 
   useEffect(() => {
     const storedList = localStorage.getItem('myList');
@@ -92,7 +100,7 @@ function App() {
                   </p>
                 </div>
 
-                <Home movies={movies} loading={loading} progress={progress} error={error}/>
+                <Home movies={movies} page={page} setPage={setPage} totalPages={totalPages} loading={loading} progress={progress} error={error}/>
               </motion.div>
             }
           />

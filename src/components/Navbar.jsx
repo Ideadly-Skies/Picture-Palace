@@ -16,7 +16,8 @@ export default function Navbar({ setMovies, query, setQuery, setLoading }) {
     try {
       const response = await fetch(URL);
       const { results } = await response.json();
-      query.length > 2 ? setMovies(results.slice(0, 3)) : setMovies(results);
+      setMovies(results); 
+
     } catch (error) {
       console.log(error);
     } finally {
