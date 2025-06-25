@@ -1,4 +1,5 @@
 import './App.css'
+import HeroCarousel from './components/HeroCarousel';
 import Home from './components/Home';
 import MovieDetail from './components/MovieDetail';
 import MyList from './components/MyList';
@@ -73,12 +74,13 @@ function App() {
             path="/"
             element={
               <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4 }}
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
               >
+                <HeroCarousel movies={movies}/>
                 <Home movies={movies} loading={loading} progress={progress} error={error}/>
               </motion.div>
             }
