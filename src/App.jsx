@@ -41,25 +41,25 @@ function App() {
     }
   }
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   if (location.pathname === '/' || isDetailPage || isCollectionPage || movies.length == 0) {
-  //     const handler = setTimeout(() => {
-  //       fetchMovies(page);
-  //     }, 1000) 
-  //     return () => clearTimeout(handler); 
-  //   }
-  // }, [location.pathname, movies.length, page]);
-  
   useEffect(() => {
-    if (location.pathname === '/' || isDetailPage || isCollectionPage) {
-      setLoading(true);
+    setLoading(true);
+    if (location.pathname === '/' || isDetailPage || isCollectionPage || movies.length == 0) {
       const handler = setTimeout(() => {
         fetchMovies(page);
-      }, 1000);
-      return () => clearTimeout(handler);
+      }, 1000) 
+      return () => clearTimeout(handler); 
     }
-  }, [location.pathname, page, isDetailPage, isCollectionPage]);
+  }, [location.pathname, movies.length, page]);
+  
+  // useEffect(() => {
+  //   if (location.pathname === '/' || isDetailPage || isCollectionPage) {
+  //     setLoading(true);
+  //     const handler = setTimeout(() => {
+  //       fetchMovies(page);
+  //     }, 1000);
+  //     return () => clearTimeout(handler);
+  //   }
+  // }, [location.pathname, page, isDetailPage, isCollectionPage]);
 
   useEffect(() => {
     const storedList = localStorage.getItem('myList');
