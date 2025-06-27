@@ -1,9 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function MyList({ myList, query }) {
-  const [page, setPage] = useState(1);
+export default function MyList({ myList }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1");
+  const query = searchParams.get("query") || ""; 
   const moviesPerPage = 12;
+
+  const updatePage = (newPage) => {
+    const params = {};
+    if (query) params.query = query;
+    params.page = newPage;
+    setSearchParams(params);
+  };
 
   // Filter list based on query
   const filteredList =
@@ -20,60 +30,37 @@ export default function MyList({ myList, query }) {
     page * moviesPerPage
   );
 
-  // Pagination utility
-  function getPaginationRange(currentPage, totalPages, siblingCount = 1) {
-    const totalNumbers = siblingCount * 2 + 5;
-    if (totalPages <= totalNumbers) {
-      return [...Array(totalPages).keys()].map((n) => n + 1);
-    }
-
-    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
-    const rightSiblingIndex = Math.min(
-      currentPage + siblingCount,
-      totalPages
-    );
-
-    const showLeftEllipsis = leftSiblingIndex > 2;
-    const showRightEllipsis = rightSiblingIndex < totalPages - 1;
-
-    const range = [1];
-
-    if (showLeftEllipsis) range.push("…");
-
-    for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
-      if (i !== 1 && i !== totalPages) range.push(i);
-    }
-
-    if (showRightEllipsis) range.push("…");
-    range.push(totalPages);
-
-    return range;
-  }
-
-  const paginationRange = getPaginationRange(page, totalPages);
-
   return (
     <div className="bg-black min-h-screen text-white mt-5">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {displayedMovies.length > 0 ? (
-            displayedMovies.map((movie) => (
-              <Link
-                key={movie.id}
-                to={`/movie/${movie.id}`}
-                className="relative group transform hover:scale-105 transition"
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                  className="rounded-lg shadow-md border border-transparent group-hover:border-red-500 group-hover:ring-2 group-hover:ring-red-500"
-                />
-              </Link>
-            ))
-          ) : (
-            <p className="text-white/70 col-span-full">Your list is empty.</p>
-          )}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={page} // very important for triggering re-renders
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+          >
+            {displayedMovies.length > 0 ? (
+              displayedMovies.map((movie) => (
+                <Link
+                  key={movie.id}
+                  to={`/movie/${movie.id}`}
+                  className="relative group transform hover:scale-105 transition"
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title}
+                    className="rounded-lg shadow-md border border-transparent group-hover:border-red-500 group-hover:ring-2 group-hover:ring-red-500"
+                  />
+                </Link>
+              ))
+            ) : (
+              <p className="text-white/70 col-span-full">Your list is empty.</p>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
         {/* Pagination */}
         {filteredList.length > moviesPerPage && (
@@ -85,7 +72,7 @@ export default function MyList({ myList, query }) {
                 page <= 1 ? "opacity-50 cursor-not-allowed" : "hover:outline hover:outline-2 hover:outline-red-500"
                 }`}
                 disabled={page <= 1}
-                onClick={() => setPage(page - 1)}
+                onClick={() => updatePage(page - 1)}
             >
                 <i className="fa-solid fa-chevron-left"></i> Prev
             </button>
@@ -101,7 +88,7 @@ export default function MyList({ myList, query }) {
                 page >= totalPages ? "opacity-50 cursor-not-allowed" : "hover:outline hover:outline-2 hover:outline-red-500"
                 }`}
                 disabled={page >= totalPages}
-                onClick={() => setPage(page + 1)}
+                onClick={() => updatePage(page + 1)}
             >
                 Next <i className="fa-solid fa-chevron-right"></i>
             </button>

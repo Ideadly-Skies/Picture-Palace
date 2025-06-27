@@ -1,10 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
-export default function Navbar({ setMovies, query, setQuery, setLoading }) {
-  const handleInputChange = (e) => setQuery(e.target.value);
-  const resetQuery = () => setQuery("");
+export default function Navbar({ setMovies, setLoading }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("query") || "";
+
+  const handleInputChange = (e) => {
+    const newQuery = e.target.value;
+    setSearchParams(newQuery ? { query: newQuery } : {});
+  };
+
+  const resetQuery = () => setSearchParams({});
 
   async function fetchMovie() {
     setLoading(true);

@@ -8,6 +8,7 @@ import Footer from './components/Footer'
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -15,14 +16,16 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(false);
   const [myList, setMyList] = useState([]);
-  const [query, setQuery] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const location = useLocation();
   const isDetailPage = location.pathname.startsWith('/movie/');
   const isCollectionPage = location.pathname.startsWith('/my-list');
-  
+
+  const [searchParams] = useSearchParams();
+  const hasQuery = !!searchParams.get("query");
+
   // fetching (non-blocking)
   async function fetchMovies(page = 1) {
     setLoading(true);
@@ -84,7 +87,7 @@ function App() {
 
   return (
     <>
-      {!isDetailPage && <Navbar setMovies={setMovies} query={query} setQuery={setQuery} setLoading={setLoading}/>}
+      {!isDetailPage && <Navbar setMovies={setMovies} setLoading={setLoading}/>}
 
       <AnimatePresence mode="wait">
         <Routes location={location}>
@@ -98,15 +101,17 @@ function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
               >
-                <HeroCarousel movies={movies}/>
+                {!hasQuery && <HeroCarousel movies={movies} />}
 
                 <div className="px-8 pt-16 pb-8 text-center bg-black from-black via-black/60 to-transparent">
                   <h2 className="text-4xl font-extrabold text-white tracking-[0.2em] uppercase drop-shadow-lg">
-                    Now Playing
+                    {hasQuery ? "Search Results" : "Now Playing"}
                   </h2>
                   <div className="w-24 h-1 mx-auto mt-2 mb-4 bg-red-600 opacity-80 rounded-full"></div>
                   <p className="text-white/70 mt-2 text-sm font-light max-w-md mx-auto tracking-wide drop-shadow-sm">
-                    Browse our top movies currently in theaters — discover the best picks for your next cinematic experience.
+                    {hasQuery
+                      ? `Results for “${searchParams.get("query")}”`
+                      : "Browse our top movies currently in theaters — discover the best picks for your next cinematic experience."}
                   </p>
                 </div>
 
@@ -138,7 +143,7 @@ function App() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
               >
-                <MyList myList={myList} query={query}/>
+                <MyList myList={myList}/>
               </motion.div>
             }
           />
