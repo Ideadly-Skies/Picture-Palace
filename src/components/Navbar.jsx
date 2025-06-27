@@ -18,8 +18,8 @@ export default function Navbar({ setMovies, setLoading }) {
     setLoading(true);
     const API_KEY = "6b3e018d07a42e39065208f94be35ed3";
     const URL = query
-      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
-      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&include_adult=false`
+      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&include_adult=false`;
 
     try {
       const response = await fetch(URL);
